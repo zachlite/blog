@@ -176,7 +176,6 @@ Conversely, when the fragments's depth is closer to the camera, than the fragmen
 
 ## Thanks for reading!
 
-The full source code for this project is available here:
 
 What did you think of this post?
 Could I have done something better?
