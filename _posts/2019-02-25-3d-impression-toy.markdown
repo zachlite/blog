@@ -11,9 +11,9 @@ date: 2019-02-25 00:00:00
 <iframe src='https://gfycat.com/ifr/MasculineThirstyAustraliansilkyterrier' frameborder='0' scrolling='no' allowfullscreen width='640' height='593'></iframe>
 
 
-Demo: <a>link to demo</a>
+Here's a <a href="https://zachlite.github.io/3d-impression-toy">demo.</a>
 
-Source Code: <a>link to source code</a>
+Here's the <a href="https://github.com/zachlite/3d-impression-toy">source code.</a>
 
 
 
@@ -104,7 +104,7 @@ At this point, I use a separate vertex and fragment shader for the column, since
 This gets me to here:
 <div style='position:relative; padding-bottom:calc(92.75% + 44px)'><iframe src='https://gfycat.com/ifr/ImmediateInsidiousGelada' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;' allowfullscreen></iframe></div>
 
-## Only drawing columns up to height
+## Only drawing columns up to where they intersect the surface of the model
 
 This part is where the real magic happens.
 A fragment of the column should only be drawn if that fragment's height in world space is below where the xz center of the column makes its final intersection with the surface of the model.  That's a mouthful.  Here's a picture to show what I mean:
@@ -155,7 +155,7 @@ Here's an illustration showing the difference between considering heights in wor
 
 <img src="/assets/img/worldvsdepthspace.png"/>
 
-Similarly, the depth encoded in the depth map is also a distance from the depth map camera, so the annoyingly complicated world space problem described above resolves to the shockingly simple depth space solution:
+Similarly, the depth encoded in the depth map is also a distance from the depth map camera, so the annoyingly complicated world space problem described earlier turns in to the shockingly simple depth space solution:
 
 {% highlight javascript %}
 
@@ -174,7 +174,7 @@ Conversely, when the fragments's depth is closer to the camera, than the fragmen
 
 
 
-## Thanks for reading
+## Thanks for reading!
 
 The full source code for this project is available here:
 
