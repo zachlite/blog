@@ -16,6 +16,7 @@ Here's a <a href="https://zachlite.github.io/3d-impression-toy">demo.</a>
 Here's the <a href="https://github.com/zachlite/3d-impression-toy">source code.</a>
 
 
+This post assumes some familiarlity with graphics programming, namely coordinate systems, and shaders.  It is not my intention to exclude potentially interested readers.  If you'd like a good resource that covers a lot of the requisite concepts, here's an <a href="https://learnopengl.com/" target="_blank">awesome reference</a>.
 
 <h2>Background</h2>
 
