@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "My First Nontrivial Graphics Programming Project: Building a 3D Impression Toy in WebGL"
+title: "How I Built a 3D Impression Toy in WebGL"
 date: 2019-02-25 00:00:00
 ---
 
@@ -23,8 +23,7 @@ This post assumes some familiarlity with graphics programming, namely coordinate
 
 Recently, I built a 3D impression toy to improve my skills as a graphics programmer.  I've been working hard to level up my graphics programming kung foo by reading a ton online, and following various tutorials, but it was time to dive in, and try something on my own.
 
-What's a 3D impression toy?
-
+What's a 3D impression toy? <a href="https://www.google.com/search?q=3d+impression+toy&source=lnms&tbm=isch">Remember these?</a>
 
 Why build one?
 - They're cool.
