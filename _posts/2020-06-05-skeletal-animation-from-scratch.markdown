@@ -1,38 +1,40 @@
 ---
 layout: post
 title:  "Skeletal Animation from Scratch"
-date:   2020-06-01 19:10:47 -0400
+date:   2020-06-05 17:10:47 -0400
 ---
 
 
 In this post, I break down how I implemented a basic, yet functional skeletal animation system.
 
-Here's the end result:
-
-
-## Step 1:
+<br/>
+## The simplest case
 The simplest possible scenario is just a basic shape whose transform changes over time.
-
-[Video 1]
-
+<video loop autoplay style="width:480px">
+    <source src="/assets/skeletal_animation/step_1.mp4">
+</video>
 So far, so good.
 
 
 
-## Step 2:
+<br/>
+## More complexity
 I'm ready to introduce more complexity with a second shape. Just introducing a new shape is obviously not enough, because the second shape is unconcerned with the movement of the first shape.
 
-[video 2]
+<video loop autoplay style="width:480px">
+    <source src="/assets/skeletal_animation/step_2.mp4">
+</video>
 
-## Step 3:
-Skeletal animation is the idea of creating a hierarchical relationship between different shapes, so that when a parent shape moves in some way, it's children move with respect to it.  Additionally, the children are free to move themselves, as long as they respect the movement of their parents. Just like a real skeleton, when I move my arm, my hand moves with it, and as my arm moves, I can make a fist, or rotate my wrist, etc.
 
+<br/>
+## Listen to your parents
+Skeletal animation is the idea of creating a hierarchical relationship between different shapes, so that when a parent shape moves in some way, it's children move with respect to it. Since children can have children themselves, this inheritance propagates all the way to the last children.
 
-I will designate shape 1 as the parent, and shape 2 as it's child.
+Considering the two shapes I will designate shape 1 as the parent, and shape 2 as it's child.
 
 So, what must happen is we must bring shape 2 into the coordinate space of shape 1, so that shape 1 acts as shape 2's origin.  This way, shape 2 is free to move independently, while still respecting the movement of it's parent. This is accomplished by applying the transformation of shape 1 to shape 2's transformation.
 
-Matrix multiplication is like a mechanism that converts between coordinate spaces.  By multiplying the transform of shape 2 by the transform of shape 1, we end up in shape 1's coordinate space.
+Matrix multiplication converts between coordinate spaces. By multiplying the transform of shape 2 by the transform of shape 1, we end up in shape 1's coordinate space.
 
 In a language like C++, matrix multiplication happens in the reverse of how it's written. The expression `matA * matB` really means "apply MatrixA to MatrixB".
 
@@ -50,7 +52,7 @@ struct Transform {
 }
 
 mat4 calcShape2TransformMatrix(mat4 *shape1TransformMatrix, Transform *s2) {
-    // calculate shape2's transformation
+    // calculate shape2's local transformation
     vec3 x = vec3(1.0, 0.0, 0.0);
     mat4 s2Rotation = rotate(mat4(1.0), radians(s2->rotation.x), x);
     mat4 s2Translation = translate(mat4(1.0), s2->translation);
@@ -60,13 +62,17 @@ mat4 calcShape2TransformMatrix(mat4 *shape1TransformMatrix, Transform *s2) {
     return *shape1TransformMatrix * s2Transform;
 }
 ```
-
+<br/>
+<video loop autoplay style="width:480px">
+    <source src="/assets/skeletal_animation/step_3.mp4">
+</video>
+<br/>
 There! Now shape 2 behaves relative to it's parent. Now this needs be extended to support an arbitrary number of nodes in an arbitrary number of configurations.
 
 If shape 2 had a child, what might it's transform be?  Well, we could reuse `calcShape2TransformMatrix` above, but we need to remember that shape 2's transform is influenced by it's parent! 
 
-
-## Step 4:
+<br/>
+## Generalizing
 In the general case, a node has arbitrary children, each with their own arbitrary children, on and on. 
 A more general implementation might recurse to the leaf nodes, accumulating parent transformations along the way.
 
@@ -99,7 +105,8 @@ void setNodeTransform(PoseableNode *node, glm::mat4 *parentTransform) {
 }
 ```
 
-## Step 4.5
+<br/>
+## Pivot
 Skeletal animation wouldn't be feature complete if we didn't consider the pivot points of individual nodes. Often, when a shape rotates about some axis, it doesn't always rotate about its center of mass. For example, your fingers rotate about your knuckles, and your lower arms rotate about your elbows.  So, for each node, we need to define where it pivots.
 
 For me, this part is what made my brain work the hardest.  Rotating about a pivot works like this:
@@ -122,13 +129,20 @@ mat4 revisedCalcLocalTransform(PoseableNode *node) {
 }
 
 ```
+<br/>
+
+<video loop autoplay style="width:480px">
+    <source src="/assets/skeletal_animation/step_4_5.mp4">
+</video>
+
+<br/>
 
 ## Step 5
 Now, in order to implement a cool animation, we just need to define our skeleton, and specify how a node's transform should change in the update loop.
 
 ```c++
 
-/// in main
+// in main
 PoseableNode rightUpperLeg;
 rightUpperleg.transform.translation = vec3(-.25, -1.0, 0.0);
 rightUpperleg.transfrom.rotation = vec3(0.0, 0.0, -5.0);
@@ -143,14 +157,22 @@ torso.transform.rotation = vec3(0.0);
 torso.transform.scale = vec3(.8, 1.0, .3);
 torso.children = {&rightUpperLeg ...};
 
-/// in update loop
+// ... etc
+
+// in update loop
 torso.transform.rotation.y += .1;
 rightUpperLeg.transform.rotation.x = abs(cos(current_time)) * 90;
 
 ```
 
+<video loop autoplay style="width:480px">
+    <source src="/assets/skeletal_animation/step_5.mp4">
+</video>
+
+<br/>
+
 ### But what about scale?
-I arbitrarily decided that I didn't want a node's scale influencing the scale of it's children.  Therefore, I do not consider scale when calculating a node's localTransform - it would end up accumulated. Instead, I consider it later, as I'm about to draw each node.
+I arbitrarily decided that I didn't want a node's scale influencing the scale of it's children.  Therefore, I do not consider scale when calculating a node's local transform, because it would end up accumulated. Instead, I consider it later, as I'm about to draw each node.
 
 ```c++
 void drawNode(PoseableNode *node) {
