@@ -137,7 +137,7 @@ mat4 revisedCalcLocalTransform(PoseableNode *node) {
 
 <br/>
 
-## Step 5
+## Putting It All Together
 Now, in order to implement a cool animation, we just need to define our skeleton, and specify how a node's transform should change in the update loop.
 
 ```c++
